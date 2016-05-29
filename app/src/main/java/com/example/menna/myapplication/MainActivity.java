@@ -1,22 +1,17 @@
 package com.example.menna.myapplication;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -27,12 +22,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
 
-    ImageView postImg;
+
+    private ImageView postImgV;
+    private TextView UserNameV;
+    private TextView UserPhoneV;
+    private TextView typeV;
+    private TextView catgV;
+    private TextView titleV;
+    private TextView postDateV;
+    private TextView regionV;
+    private Button reportBtnV;
+    private TextView descV;
 
 
 
@@ -44,9 +48,30 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        postImg = (ImageView) findViewById(R.id.postImg);
+        postImgV = (ImageView) findViewById(R.id.postImg);
+
+        UserNameV = (TextView)findViewById( R.id.UserName );
+
+        UserPhoneV = (TextView)findViewById( R.id.UserPhone );
+        typeV = (TextView)findViewById( R.id.type );
+        catgV = (TextView)findViewById( R.id.catg );
+        titleV = (TextView)findViewById( R.id.title );
+        postDateV = (TextView)findViewById( R.id.postDate );
+        regionV = (TextView)findViewById( R.id.region );
+        reportBtnV = (Button)findViewById( R.id.report );
+        descV = (TextView)findViewById( R.id.desc );
+
+        showPostDetails();
 
 
+
+
+        reportBtnV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
 
@@ -75,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void ShowPostDetails(View view) {
+    public void showPostDetails() {
         RequestParams params = new RequestParams();
 
         String postId = "6";
@@ -99,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         // Make RESTful webservice call using AsyncHttpClient object
         AsyncHttpClient client = new AsyncHttpClient();
         //172.16.2.26 port 8087
-        client.get("http://172.16.1.181:8084/SlafAndShare/rest/postDetails/showPostDetails", params, new AsyncHttpResponseHandler() {
+        client.get("http://172.16.0.170:8084/SlafAndShare/rest/postDetails/showPostDetails", params, new AsyncHttpResponseHandler() {
             // When the response returned by REST has Http response code '200'
             @Override
             public void onSuccess(String response) {
@@ -128,15 +153,27 @@ public class MainActivity extends AppCompatActivity {
                         String PostDate = dataObj.get("date").toString();
                         String catg = dataObj.getString("category");
                         String type = dataObj.getString("type");
-                        Double price = dataObj.getDouble("price");
-                        Double guranteeFees = dataObj.getDouble("guaranteeFees");
+                        //Double price = dataObj.getDouble("price");
+                       // Double guranteeFees = dataObj.getDouble("guaranteeFees");
 
-                        JSONArray imgArr = dataObj.getJSONArray("images");
-                        String [] imgUrl = new String[5];
-                        for (int i = 0 ; i < imgArr.length() ; i++)
-                        {
-                            imgUrl[i] = imgArr.getString(i);
-                        }
+//                        JSONArray imgArr = dataObj.getJSONArray("images");
+//                        String [] imgUrl = new String[5];
+//                        for (int i = 0 ; i < imgArr.length() ; i++)
+//                        {
+//                            imgUrl[i] = imgArr.getString(i);
+//                        }
+
+
+                        titleV.setText(title);
+                        descV.setText(desc);
+                        regionV.setText(region);
+                        UserNameV.setText(userName);
+                        UserPhoneV.setText(phone);
+                        postDateV.setText(PostDate);
+                        catgV.setText(catg);
+                        typeV.setText(type);
+
+
 
 
 
@@ -176,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 // When Http response code other than 404, 500
                 else {
-                    Toast.makeText(getApplicationContext(), "Device might not be connected to Internet", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Server is closed or Device might not be connected to Internet ", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -184,29 +221,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
+//    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+//        ImageView bmImage;
+//
+//        public DownloadImageTask(ImageView bmImage) {
+//            this.bmImage = bmImage;
+//        }
+//
+//        protected Bitmap doInBackground(String... urls) {
+//            String urldisplay = urls[0];
+//            Bitmap mIcon11 = null;
+//            try {
+//                InputStream in = new java.net.URL(urldisplay).openStream();
+//                mIcon11 = BitmapFactory.decodeStream(in);
+//            } catch (Exception e) {
+//                Log.e("Error", e.getMessage());
+//                e.printStackTrace();
+//            }
+//            return mIcon11;
+//        }
+//
+//        protected void onPostExecute(Bitmap result) {
+//            bmImage.setImageBitmap(result);
+//        }
+//    }
 
 }
